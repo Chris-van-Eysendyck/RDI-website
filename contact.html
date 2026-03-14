@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Raven Data Insights</title>
+  <meta name="description" content="Get in touch with Raven Data Insights for tailored geopolitical and financial analysis.">
+  <link rel="icon" type="image/jpg" href="images/raven-logo.jpg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ── NAVBAR ──────────────────────────────────────────────── -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">
+      <img src="images/raven-logo.jpg" alt="Raven Data Insights" class="nav-logo">
+      <div class="nav-title">
+        <span class="nav-name">Raven Data Insights</span>
+        <span class="nav-sub">hyperrealist views on our high-frequency world</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="map.html">Map</a></li>
+      <li><a href="calls.html">Calls</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+      <li><a href="https://substack.com/@fromtheledge" target="_blank" rel="noopener" class="nav-cta">Substack ↗</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── CONTACT PAGE ────────────────────────────────────────── -->
+  <main class="contact-page">
+    <div class="container">
+      <div class="contact-grid">
+
+        <!-- Left: info -->
+        <div class="contact-info">
+          <span class="section-label">Get in Touch</span>
+          <h1>Clear analysis,<br>when it counts.</h1>
+          <p class="page-subtitle">No jargon. No hedging. Just rigorous, documented thinking.</p>
+          <hr class="contact-divider">
+
+          <div class="contact-info-block">
+            <div class="contact-info-label">Email</div>
+            <div class="contact-info-value">
+              <span id="contact-email-link"><span class="contact-email-placeholder">Loading…</span></span>
+            </div>
+          </div>
+
+          <div class="contact-info-block">
+            <div class="contact-info-label">Response time</div>
+            <div class="contact-info-value">Usually within 48 hours</div>
+          </div>
+
+          <div class="contact-info-block">
+            <div class="contact-info-label">What I can help with</div>
+            <div class="contact-info-value" style="line-height:1.8;">
+              Geopolitical scenario analysis<br>
+              Macro &amp; financial forecasting<br>
+              Pre-decision second opinions<br>
+              Custom briefings &amp; reports
+            </div>
+          </div>
+
+          <hr class="contact-divider">
+
+          <div class="contact-info-block">
+            <div class="contact-info-label">Also find me at</div>
+            <div class="contact-info-value" style="display:flex; flex-direction:column; gap:0.4rem;">
+              <a href="https://substack.com/@fromtheledge" target="_blank" rel="noopener">Substack — From the Ledge ↗</a>
+              <a href="https://www.linkedin.com/newsletters/notes-from-the-ledge-6951182737105936385/" target="_blank" rel="noopener">LinkedIn Newsletter ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: form -->
+        <div class="contact-form-wrap">
+          <h2>Send a message</h2>
+          <p class="form-intro">Ready for a level-headed analysis of your crisis? Get in touch with us below. All submissions are read personally.</p>
+
+          <div id="form-success" class="form-success" style="display:none;">
+            <div class="form-success-icon">✓</div>
+            <h3>Message sent</h3>
+            <p>Thanks for reaching out. I'll be in touch within 48 hours.</p>
+          </div>
+
+          <!--
+            Netlify Forms: the `data-netlify="true"` attribute tells Netlify to
+            handle submissions. The `data-netlify-honeypot` hidden field traps bots.
+            This form only processes correctly when deployed to Netlify.
+          -->
+          <form
+            id="contact-form"
+            name="contact"
+            method="POST"
+            data-netlify="true"
+            data-netlify-honeypot="bot-field"
+            novalidate
+          >
+            <!-- Required by Netlify for AJAX submissions -->
+            <input type="hidden" name="form-name" value="contact">
+
+            <!-- Honeypot: hidden from real users, bots fill it in and are rejected -->
+            <div class="form-honeypot">
+              <label>Do not fill this field: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">Name *</label>
+                <input type="text" id="name" name="name" required placeholder="Your name" autocomplete="name">
+              </div>
+              <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required placeholder="your@email.com" autocomplete="email">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="subject">Subject *</label>
+              <input type="text" id="subject" name="subject" required placeholder="What's this about?">
+            </div>
+
+            <div class="form-group">
+              <label for="message">Message *</label>
+              <textarea id="message" name="message" rows="6" required placeholder="Describe what you need…"></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="form-submit-btn">Send Message</button>
+            </div>
+
+            <div class="form-error-msg" id="form-error">
+              Something went wrong. Please email directly at <span id="form-error-email"></span>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ── FOOTER ──────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="images/raven-logo.jpg" alt="Logo" class="footer-logo">
+          <div>
+            <p><strong>Raven Data Insights</strong></p>
+            <p><em>hyperrealist views on our high-frequency world</em></p>
+          </div>
+        </div>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="map.html">Map</a>
+          <a href="calls.html">Calls</a>
+          <a href="contact.html">Contact</a>
+          <a href="https://substack.com/@fromtheledge" target="_blank" rel="noopener">Substack</a>
+          <a href="https://www.linkedin.com/newsletters/notes-from-the-ledge-6951182737105936385/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Raven Data Insights · Christophe van Eysendyck</p>
+        <p>All calls documented before the fact.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Email obfuscation ────────────────────────────────────────
+    // Email is never present in the HTML source — assembled only by JS,
+    // which stops the vast majority of address-harvesting scrapers.
+    (function () {
+      const u = 'ravendatainsight', d = 'gmail.com';
+      const addr = u + '@' + d;
+
+      // Sidebar email link
+      const el = document.getElementById('contact-email-link');
+      if (el) el.innerHTML = `<a href="mailto:${addr}">${addr}</a>`;
+
+      // Fallback email inside error message
+      const fe = document.getElementById('form-error-email');
+      if (fe) fe.innerHTML = `<a href="mailto:${addr}" style="color:var(--failed)">${addr}</a>`;
+    })();
+
+    // ── Form submission (AJAX for Netlify) ──────────────────────
+    const form   = document.getElementById('contact-form');
+    const btn    = document.getElementById('form-submit-btn');
+    const errMsg = document.getElementById('form-error');
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      // Basic client-side validation
+      const required = form.querySelectorAll('[required]');
+      let valid = true;
+      required.forEach(f => { if (!f.value.trim()) { f.focus(); valid = false; } });
+      if (!valid) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      errMsg.style.display = 'none';
+
+      try {
+        const res = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(new FormData(form)).toString()
+        });
+
+        if (res.ok) {
+          form.style.display = 'none';
+          document.getElementById('form-success').style.display = 'block';
+        } else {
+          throw new Error('Response not OK');
+        }
+      } catch {
+        errMsg.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Send Message';
+      }
+    });
+  </script>
+</body>
+</html>

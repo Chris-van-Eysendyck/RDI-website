@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Call Map — Raven Data Insights</title>
+  <meta name="description" content="Interactive world map of geopolitical and financial calls — visualised by outcome and year.">
+  <link rel="icon" type="image/jpg" href="images/raven-logo.jpg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    html, body { overflow: hidden; height: 100%; }
+
+    /* Globe popup overlay */
+    #globe-popup {
+      position: fixed;
+      z-index: 1000;
+      background: #161613;
+      border: 1px solid #2e2e28;
+      border-radius: 8px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      pointer-events: auto;
+    }
+    #globe-popup .popup-close-btn {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: none; border: none;
+      color: #7a7060; font-size: 18px;
+      cursor: pointer; line-height: 1;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+    #globe-popup .popup-close-btn:hover { color: #e8dcc8; }
+
+    /* Zoom controls */
+    .globe-zoom {
+      position: fixed;
+      left: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .globe-zoom-btn {
+      width: 36px; height: 36px;
+      background: rgba(13,13,10,0.94);
+      border: 1px solid var(--border-light, #2a2a22);
+      border-radius: 6px;
+      color: #a09880;
+      font-size: 1.2rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.12s, background 0.12s;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      font-family: 'Inter', sans-serif;
+    }
+    .globe-zoom-btn:hover { color: #e8dcc8; background: rgba(30,30,24,0.97); }
+    .globe-zoom-reset { font-size: 1rem; margin-top: 0.35rem; }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAVBAR ──────────────────────────────────────────────── -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">
+      <img src="images/raven-logo.jpg" alt="Raven Data Insights" class="nav-logo">
+      <div class="nav-title">
+        <span class="nav-name">Raven Data Insights</span>
+        <span class="nav-sub">hyperrealist views on our high-frequency world</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="map.html" class="active">Map</a></li>
+      <li><a href="calls.html">Calls</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="https://substack.com/@fromtheledge" target="_blank" rel="noopener" class="nav-cta">Substack ↗</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── MAP SUB-BAR ─────────────────────────────────────────── -->
+  <div class="map-bar">
+    <span class="map-bar-title">Geopolitical &amp; Financial Calls — World Map</span>
+    <span class="map-bar-count" id="map-count"></span>
+  </div>
+
+  <!-- ── GLOBE CONTAINER ─────────────────────────────────────── -->
+  <div id="map"></div>
+
+  <!-- ── POPUP OVERLAY ──────────────────────────────────────── -->
+  <div id="globe-popup" style="display:none;"></div>
+
+  <!-- ── YEAR PANEL ──────────────────────────────────────────── -->
+  <div class="year-panel">
+    <div class="year-panel-title">Year</div>
+    <button class="year-btn active" data-year="all">All</button>
+    <button class="year-btn" data-year="2026">2026</button>
+    <button class="year-btn" data-year="2025">2025</button>
+    <button class="year-btn" data-year="2024">2024</button>
+    <button class="year-btn" data-year="2023">2023</button>
+  </div>
+
+  <!-- ── ZOOM CONTROLS ─────────────────────────────────────── -->
+  <div class="globe-zoom">
+    <button class="globe-zoom-btn" id="zoom-in"  title="Zoom in">+</button>
+    <button class="globe-zoom-btn" id="zoom-out" title="Zoom out">−</button>
+    <button class="globe-zoom-btn globe-zoom-reset" id="zoom-reset" title="Reset view">⊙</button>
+  </div>
+
+  <!-- ── LEGEND ──────────────────────────────────────────────── -->
+  <div class="map-legend">
+    <div class="legend-title">Outcome</div>
+    <div class="legend-item"><div class="legend-dot success"></div> Correct call</div>
+    <div class="legend-item"><div class="legend-dot failed"></div>  Missed call</div>
+    <div class="legend-item"><div class="legend-dot pending"></div> Ongoing / pending</div>
+    <div class="legend-item"><div class="legend-dot passive"></div> Passive (weight 0)</div>
+  </div>
+
+  <script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script src="https://unpkg.com/globe.gl"></script>
+  <script>
+    // ── Helpers ────────────────────────────────────────────────
+    const COLORS = {
+      success: '#52b788',
+      failed:  '#e07070',
+      pending: '#f4a942'
+    };
+
+    function pointColor(d) {
+      return d.weight === 0 ? '#888888' : (COLORS[d.outcome] || '#888888');
+    }
+
+    function pointRadius(d) {
+      return d.weight === 2 ? 0.75 : d.weight === 1 ? 0.58 : 0.38;
+    }
+
+    function pointAltitude(d) {
+      return d.weight === 2 ? 0.04 : d.weight === 1 ? 0.025 : 0.005;
+    }
+
+    // ── Popup HTML ─────────────────────────────────────────────
+    function popupHTML(c) {
+      const outcomeLabel = { success: '✓ Correct', failed: '✗ Missed', pending: '⏳ Pending' };
+      const weightLabel  = c.weight === 2 ? '★★ Important' :
+                           c.weight === 1 ? '★ Normal' :
+                           c.weight === 0 ? '— Passive' : null;
+      const dateStr = new Date(c.date).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+
+      return `<div class="popup-inner">
+        <div class="popup-year">${c.year} · ${c.region}</div>
+        <div class="popup-title">${c.title}</div>
+        <span class="popup-status ${c.outcome}">${outcomeLabel[c.outcome] || c.outcome}</span>
+        <div class="popup-desc">${c.description}</div>
+        <div class="popup-footer">
+          ${c.article_url && c.article_url !== '#'
+            ? `<a class="popup-link" href="${c.article_url}" target="_blank" rel="noopener">Read article ↗</a>`
+            : `<span class="popup-link" style="color:#4a4535">${c.article_title || ''}</span>`}
+          ${weightLabel
+            ? `<span class="popup-weight-tag">${weightLabel}</span>`
+            : `<span class="popup-weight-tag">${dateStr}</span>`}
+        </div>
+      </div>`;
+    }
+
+    // ── Popup show/hide ────────────────────────────────────────
+    function showPopup(point, event) {
+      const el = document.getElementById('globe-popup');
+      el.innerHTML = `<button class="popup-close-btn" id="popup-close-btn">×</button>` + popupHTML(point);
+
+      const pw = 360, ph = 300;
+      let x = event.clientX + 18;
+      let y = event.clientY - 30;
+      if (x + pw > window.innerWidth - 10)  x = event.clientX - pw - 18;
+      if (y + ph > window.innerHeight - 10) y = window.innerHeight - ph - 10;
+      if (y < 10) y = 10;
+
+      el.style.left = x + 'px';
+      el.style.top  = y + 'px';
+      el.style.display = 'block';
+
+      document.getElementById('popup-close-btn').addEventListener('click', hidePopup);
+    }
+
+    function hidePopup() {
+      document.getElementById('globe-popup').style.display = 'none';
+    }
+
+    // ── Globe init ─────────────────────────────────────────────
+    const mapEl = document.getElementById('map');
+
+    const globe = Globe()
+      .backgroundColor('#0a0a08')
+      .showAtmosphere(true)
+      .atmosphereColor('#4E8B64')
+      .atmosphereAltitude(0.18)
+      .polygonCapColor(() => '#141410')
+      .polygonSideColor(() => '#1a2a1a')
+      .polygonStrokeColor(() => '#2e3e2e')
+      .polygonAltitude(0.005)
+      .pointColor(pointColor)
+      .pointRadius(pointRadius)
+      .pointAltitude(pointAltitude)
+      .pointsMerge(false)
+      .onPointClick((point, event) => showPopup(point, event))
+      .onGlobeClick(hidePopup)
+      (mapEl);
+
+    globe.width(mapEl.clientWidth).height(mapEl.clientHeight);
+
+    // ── Auto-rotation (pauses on drag, resumes after 3 s) ──────
+    const controls = globe.controls();
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.5;
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.1;
+
+    let rotateTimer;
+    controls.addEventListener('start', () => {
+      clearTimeout(rotateTimer);
+      controls.autoRotate = false;
+    });
+    controls.addEventListener('end', () => {
+      rotateTimer = setTimeout(() => { controls.autoRotate = true; }, 3000);
+    });
+
+    window.addEventListener('resize', () => {
+      globe.width(mapEl.clientWidth).height(mapEl.clientHeight);
+    });
+
+    // ── Close popup on Escape ──────────────────────────────────
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') hidePopup(); });
+
+    // ── Load world polygons + calls ────────────────────────────
+    let allCalls = [];
+    let activeYear = 'all';
+
+    Promise.all([
+      fetch('https://unpkg.com/world-atlas@2/countries-110m.json').then(r => r.json()),
+      fetch('data/calls.json').then(r => r.json())
+    ]).then(([worldData, callsData]) => {
+      const countries = topojson.feature(worldData, worldData.objects.countries);
+      globe.polygonsData(countries.features);
+
+      allCalls = callsData.calls.filter(c => !c._placeholder);
+      globe.pointsData(allCalls);
+      updateCount(allCalls);
+    });
+
+    // ── Year filter ────────────────────────────────────────────
+    function filterCalls(year) {
+      hidePopup();
+      const filtered = year === 'all'
+        ? allCalls
+        : allCalls.filter(c => c.year === parseInt(year));
+      globe.pointsData(filtered);
+      updateCount(filtered);
+    }
+
+    function updateCount(calls) {
+      const success = calls.filter(c => c.outcome === 'success').length;
+      const failed  = calls.filter(c => c.outcome === 'failed').length;
+      const pending = calls.filter(c => c.outcome === 'pending').length;
+      const total   = calls.length;
+      document.getElementById('map-count').textContent =
+        `${total} call${total !== 1 ? 's' : ''} · ${success} correct · ${failed} missed · ${pending} pending`;
+    }
+
+    document.querySelectorAll('.year-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeYear = btn.dataset.year;
+        filterCalls(activeYear);
+      });
+    });
+
+    // ── Zoom controls ──────────────────────────────────────────
+    const DEFAULT_ALTITUDE = 2.5;
+    const MIN_ALTITUDE     = 0.5;
+    const MAX_ALTITUDE     = 6.0;
+
+    function getAltitude() {
+      return globe.pointOfView().altitude;
+    }
+
+    document.getElementById('zoom-in').addEventListener('click', () => {
+      const alt = Math.max(MIN_ALTITUDE, getAltitude() * 0.65);
+      globe.pointOfView({ altitude: alt }, 400);
+    });
+
+    document.getElementById('zoom-out').addEventListener('click', () => {
+      const alt = Math.min(MAX_ALTITUDE, getAltitude() * 1.5);
+      globe.pointOfView({ altitude: alt }, 400);
+    });
+
+    document.getElementById('zoom-reset').addEventListener('click', () => {
+      globe.pointOfView({ lat: 20, lng: 10, altitude: DEFAULT_ALTITUDE }, 700);
+    });
+  </script>
+</body>
+</html>

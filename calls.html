@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calls & Scoring — Raven Data Insights</title>
+  <meta name="description" content="Complete track record of geopolitical and financial calls, scored and weighted.">
+  <link rel="icon" type="image/jpg" href="images/raven-logo.jpg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ── NAVBAR ──────────────────────────────────────────────── -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">
+      <img src="images/raven-logo.jpg" alt="Raven Data Insights" class="nav-logo">
+      <div class="nav-title">
+        <span class="nav-name">Raven Data Insights</span>
+        <span class="nav-sub">hyperrealist views on our high-frequency world</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="map.html">Map</a></li>
+      <li><a href="calls.html" class="active">Calls</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="https://substack.com/@fromtheledge" target="_blank" rel="noopener" class="nav-cta">Substack ↗</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── PAGE CONTENT ────────────────────────────────────────── -->
+  <main class="calls-page">
+    <div class="container">
+
+      <div class="page-header">
+        <span class="section-label">Track Record</span>
+        <h1>Calls &amp; Scoring</h1>
+        <p class="page-subtitle">Every prediction documented before the fact, scored when it resolves.</p>
+      </div>
+
+      <!-- Score summary cards -->
+      <div class="score-grid" id="score-grid">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Year filter tabs -->
+      <div class="year-tabs" id="year-tabs">
+        <button class="year-tab active" data-year="all">All Years</button>
+        <button class="year-tab" data-year="2026">2026</button>
+        <button class="year-tab" data-year="2025">2025</button>
+        <button class="year-tab" data-year="2024">2024</button>
+        <button class="year-tab" data-year="2023">2023</button>
+      </div>
+
+      <!-- Calls list -->
+      <div class="calls-list" id="calls-list">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Scoring methodology note -->
+      <div class="scoring-note">
+        <strong>Scoring methodology</strong><br>
+        From 2025 onwards, calls carry explicit weights: <strong>★★ Important (2)</strong> — high-conviction structural calls; <strong>★ Normal (1)</strong> — standard directional calls; <strong>— Passive (0)</strong> — calls that something would <em>not</em> happen, or barely significant outcomes. These are tracked but excluded from the weighted score. The weighted accuracy is calculated as: <em>sum of weights of correct calls ÷ sum of weights of all resolved non-passive calls</em>.<br><br>
+        For <strong>2023–2024</strong>, all calls carry equal weight (1 point for correct, 0 for missed). Simple accuracy applies.
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── FOOTER ──────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="images/raven-logo.jpg" alt="Logo" class="footer-logo">
+          <div>
+            <p><strong>Raven Data Insights</strong></p>
+            <p><em>hyperrealist views on our high-frequency world</em></p>
+          </div>
+        </div>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="map.html">Map</a>
+          <a href="calls.html">Calls</a>
+          <a href="contact.html">Contact</a>
+          <a href="https://substack.com/@fromtheledge" target="_blank" rel="noopener">Substack</a>
+          <a href="https://www.linkedin.com/newsletters/notes-from-the-ledge-6951182737105936385/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Raven Data Insights · Christophe van Eysendyck</p>
+        <p>All calls documented before the fact.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Helpers ─────────────────────────────────────────────────
+    function weightLabel(w) {
+      if (w === 2) return '<span class="weight-stars">★★</span><span class="weight-label">Important</span>';
+      if (w === 1) return '<span class="weight-stars">★</span><span class="weight-label">Normal</span>';
+      if (w === 0) return '<span class="weight-stars" style="color:var(--text-dim)">—</span><span class="weight-label">Passive</span>';
+      return '';
+    }
+
+    function outcomeLabel(o) {
+      if (o === 'success') return '<span class="outcome-badge success">✓ Correct</span>';
+      if (o === 'failed')  return '<span class="outcome-badge failed">✗ Missed</span>';
+      return '<span class="outcome-badge pending">⏳ Pending</span>';
+    }
+
+    function formatDate(d) {
+      return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    // ── Score computation ────────────────────────────────────────
+    function computeScore(calls, year) {
+      const subset = calls.filter(c => year === 'all' || c.year === year);
+      const resolved = subset.filter(c => c.outcome !== 'pending');
+
+      if (year >= 2025) {
+        // Weighted scoring — exclude passive (weight=0)
+        const countable = resolved.filter(c => c.weight > 0);
+        const maxW  = countable.reduce((s, c) => s + c.weight, 0);
+        const gotW  = countable.filter(c => c.outcome === 'success').reduce((s, c) => s + c.weight, 0);
+        return { maxW, gotW, resolved: resolved.length, total: subset.length };
+      } else {
+        // Simple 1/0 scoring for pre-2025
+        const got = resolved.filter(c => c.outcome === 'success').length;
+        return { maxW: resolved.length, gotW: got, resolved: resolved.length, total: subset.length };
+      }
+    }
+
+    function scoreDisplay(sc, year) {
+      if (sc.resolved === 0) return { label: '—', pct: 0 };
+      if (sc.maxW === 0)    return { label: '—', pct: 0 };
+      const pct = Math.round(sc.gotW / sc.maxW * 100);
+      if (year >= 2025) {
+        return { label: `${sc.gotW}/${sc.maxW}`, pct };
+      } else {
+        return { label: `${sc.gotW}/${sc.resolved}`, pct };
+      }
+    }
+
+    // ── Render score cards ───────────────────────────────────────
+    function renderScoreCards(calls) {
+      const years = [2026, 2025, 2024, 2023];
+      const grid = document.getElementById('score-grid');
+      grid.innerHTML = '';
+
+      years.forEach(yr => {
+        const sc  = computeScore(calls, yr);
+        const dis = scoreDisplay(sc, yr);
+        const note = yr >= 2025 ? 'Weighted score' : 'Simple score';
+        const pending = sc.total - sc.resolved;
+
+        grid.innerHTML += `
+          <div class="score-card">
+            <div class="score-card-year">${yr}${yr >= 2025 ? ' · Weighted' : ''}</div>
+            <div class="score-card-value">${dis.label}</div>
+            <div class="score-card-label">${dis.pct > 0 ? dis.pct + '% accuracy' : 'No resolved calls yet'}${pending > 0 ? ` · ${pending} pending` : ''}</div>
+            <div class="score-bar"><div class="score-bar-fill" data-width="${dis.pct}"></div></div>
+          </div>`;
+      });
+
+      // Animate bars after render
+      setTimeout(() => {
+        document.querySelectorAll('.score-bar-fill').forEach(el => {
+          el.style.width = el.dataset.width + '%';
+        });
+      }, 100);
+    }
+
+    // ── Render calls list ────────────────────────────────────────
+    function renderCalls(calls, yearFilter) {
+      const list = document.getElementById('calls-list');
+      list.innerHTML = '';
+
+      let subset = yearFilter === 'all'
+        ? [...calls].sort((a, b) => b.year - a.year || new Date(b.date) - new Date(a.date))
+        : calls.filter(c => c.year === parseInt(yearFilter))
+               .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      if (subset.length === 0) {
+        list.innerHTML = '<p style="color:var(--text-dim);padding:2rem 0">No calls for this period yet.</p>';
+        return;
+      }
+
+      subset.forEach(c => {
+        const isWeighted = c.year >= 2025;
+        const isPlaceholder = !!c._placeholder;
+
+        list.innerHTML += `
+          <div class="call-card ${c.outcome}-card${isPlaceholder ? ' placeholder' : ''}">
+            <div class="call-left">
+              <div class="call-meta">
+                <span class="call-date">${formatDate(c.date)}</span>
+                <span class="call-region">${c.region}</span>
+                ${isPlaceholder ? '<span class="call-region" style="background:rgba(255,103,25,0.1);color:var(--accent)">Placeholder</span>' : ''}
+              </div>
+              <div class="call-title">${c.title}</div>
+              <div class="call-desc">${c.description}</div>
+              ${c.article_url && c.article_url !== '#'
+                ? `<a class="call-link" href="${c.article_url}" target="_blank" rel="noopener">↗ ${c.article_title}</a>`
+                : ''}
+            </div>
+            <div class="call-right">
+              ${outcomeLabel(c.outcome)}
+              ${isWeighted
+                ? `<div class="weight-badge">${weightLabel(c.weight)}</div>`
+                : `<div class="weight-badge"><span class="weight-label" style="color:var(--text-dim)">Unweighted</span></div>`}
+            </div>
+          </div>`;
+      });
+    }
+
+    // ── Year tab events ──────────────────────────────────────────
+    let callsData = [];
+    let activeYear = 'all';
+
+    document.querySelectorAll('.year-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        activeYear = tab.dataset.year;
+        renderCalls(callsData, activeYear);
+      });
+    });
+
+    // ── Bootstrap ────────────────────────────────────────────────
+    fetch('data/calls.json')
+      .then(r => r.json())
+      .then(data => {
+        callsData = data.calls;
+        renderScoreCards(callsData.filter(c => !c._placeholder));
+        renderCalls(callsData, 'all');
+      })
+      .catch(err => {
+        document.getElementById('calls-list').innerHTML =
+          '<p style="color:var(--failed);padding:2rem 0">Could not load calls data. If viewing locally, open via a local server (e.g. <code>npx serve .</code>) rather than directly from the file system.</p>';
+      });
+  </script>
+</body>
+</html>
