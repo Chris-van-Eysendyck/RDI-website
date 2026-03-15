@@ -26,6 +26,9 @@
       <li><a href="contact.html">Contact</a></li>
       <li><a href="https://substack.com/@fromtheledge" target="_blank" rel="noopener" class="nav-cta">Substack ↗</a></li>
     </ul>
+    <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
   <!-- ── HERO ────────────────────────────────────────────────── -->
@@ -163,6 +166,25 @@
   </footer>
 
   <script>
+    // ── Hamburger menu ───────────────────────────────────────────
+    (function() {
+      const btn = document.querySelector('.nav-hamburger');
+      const nav = document.querySelector('.nav-links');
+      if (!btn || !nav) return;
+      btn.addEventListener('click', () => {
+        const open = nav.classList.toggle('open');
+        btn.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open);
+      });
+      nav.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          nav.classList.remove('open');
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+    })();
+
     // ── Email obfuscation ────────────────────────────────────────
     (function() {
       const u = 'ravendatainsight', d = 'gmail.com';

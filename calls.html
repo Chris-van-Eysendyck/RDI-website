@@ -26,6 +26,9 @@
       <li><a href="contact.html">Contact</a></li>
       <li><a href="https://substack.com/@fromtheledge" target="_blank" rel="noopener" class="nav-cta">Substack ↗</a></li>
     </ul>
+    <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
   <!-- ── PAGE CONTENT ────────────────────────────────────────── -->
@@ -156,7 +159,7 @@
         const pending = sc.total - sc.resolved;
 
         grid.innerHTML += `
-          <div class="score-card">
+          <div class="score-card" data-year="${yr}" style="cursor:pointer" title="Filter by ${yr}">
             <div class="score-card-year">${yr}${yr >= 2025 ? ' · Weighted' : ''}</div>
             <div class="score-card-value">${dis.label}</div>
             <div class="score-card-label">${dis.pct > 0 ? dis.pct + '% accuracy' : 'No resolved calls yet'}${pending > 0 ? ` · ${pending} pending` : ''}</div>
@@ -170,6 +173,19 @@
           el.style.width = el.dataset.width + '%';
         });
       }, 100);
+
+      // Score card click → filter by that year and scroll to list
+      document.querySelectorAll('.score-card[data-year]').forEach(card => {
+        card.addEventListener('click', () => {
+          const yr = card.dataset.year;
+          document.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
+          const tab = document.querySelector(`.year-tab[data-year="${yr}"]`);
+          if (tab) tab.classList.add('active');
+          activeYear = yr;
+          renderCalls(callsData, yr);
+          document.getElementById('year-tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
     }
 
     // ── Render calls list ────────────────────────────────────────
@@ -225,8 +241,28 @@
         tab.classList.add('active');
         activeYear = tab.dataset.year;
         renderCalls(callsData, activeYear);
+        document.getElementById('year-tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
+
+    // ── Hamburger menu ───────────────────────────────────────────
+    (function() {
+      const btn = document.querySelector('.nav-hamburger');
+      const nav = document.querySelector('.nav-links');
+      if (!btn || !nav) return;
+      btn.addEventListener('click', () => {
+        const open = nav.classList.toggle('open');
+        btn.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open);
+      });
+      nav.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          nav.classList.remove('open');
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+    })();
 
     // ── Bootstrap ────────────────────────────────────────────────
     fetch('data/calls.json')

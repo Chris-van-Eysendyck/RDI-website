@@ -81,6 +81,9 @@
       <li><a href="contact.html">Contact</a></li>
       <li><a href="https://substack.com/@fromtheledge" target="_blank" rel="noopener" class="nav-cta">Substack ↗</a></li>
     </ul>
+    <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
   <!-- ── MAP SUB-BAR ─────────────────────────────────────────── -->
@@ -125,6 +128,25 @@
   <script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
   <script src="https://unpkg.com/globe.gl"></script>
   <script>
+    // ── Hamburger menu ───────────────────────────────────────────
+    (function() {
+      const btn = document.querySelector('.nav-hamburger');
+      const nav = document.querySelector('.nav-links');
+      if (!btn || !nav) return;
+      btn.addEventListener('click', () => {
+        const open = nav.classList.toggle('open');
+        btn.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open);
+      });
+      nav.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          nav.classList.remove('open');
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+    })();
+
     // ── Helpers ────────────────────────────────────────────────
     const COLORS = {
       success: '#52b788',
@@ -132,12 +154,17 @@
       pending: '#f4a942'
     };
 
+    // Increase point sizes on touch devices for easier tapping
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    const touchScale = isTouch ? 1.7 : 1.0;
+
     function pointColor(d) {
       return d.weight === 0 ? '#888888' : (COLORS[d.outcome] || '#888888');
     }
 
     function pointRadius(d) {
-      return d.weight === 2 ? 0.75 : d.weight === 1 ? 0.58 : 0.38;
+      const base = d.weight === 2 ? 0.75 : d.weight === 1 ? 0.58 : 0.38;
+      return base * touchScale;
     }
 
     function pointAltitude(d) {
@@ -173,17 +200,33 @@
       const el = document.getElementById('globe-popup');
       el.innerHTML = `<button class="popup-close-btn" id="popup-close-btn">×</button>` + popupHTML(point);
 
-      const pw = 360, ph = 300;
-      let x = event.clientX + 18;
-      let y = event.clientY - 30;
-      if (x + pw > window.innerWidth - 10)  x = event.clientX - pw - 18;
-      if (y + ph > window.innerHeight - 10) y = window.innerHeight - ph - 10;
-      if (y < 10) y = 10;
+      if (window.innerWidth <= 600) {
+        // Bottom sheet on mobile — centred, anchored to bottom
+        el.style.left    = '1rem';
+        el.style.right   = '1rem';
+        el.style.bottom  = '1rem';
+        el.style.top     = 'auto';
+        el.style.width   = 'auto';
+        el.style.maxHeight = '55vh';
+        el.style.overflowY = 'auto';
+      } else {
+        const pw = 360, ph = 300;
+        let x = event.clientX + 18;
+        let y = event.clientY - 30;
+        if (x + pw > window.innerWidth - 10)  x = event.clientX - pw - 18;
+        if (x < 10) x = 10;
+        if (y + ph > window.innerHeight - 10) y = window.innerHeight - ph - 10;
+        if (y < 10) y = 10;
+        el.style.left    = x + 'px';
+        el.style.top     = y + 'px';
+        el.style.right   = '';
+        el.style.bottom  = '';
+        el.style.width   = '';
+        el.style.maxHeight = '';
+        el.style.overflowY = '';
+      }
 
-      el.style.left = x + 'px';
-      el.style.top  = y + 'px';
       el.style.display = 'block';
-
       document.getElementById('popup-close-btn').addEventListener('click', hidePopup);
     }
 
