@@ -3,12 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Raven Data Insights — Hyperrealist Views on Our High-Frequency World</title>
-  <meta name="description" content="Geopolitical and financial analysis with a public track record. Every call documented, dated, and scored.">
+  <title>Raven Data Insights — Geopolitical Risk Analysis with an Audit Trail</title>
+  <meta name="description" content="Geopolitical and financial predictions documented before the fact, dated, weighted, and scored publicly. Every hit and miss on the record.">
+  <meta name="keywords" content="geopolitical risk analysis, financial forecasting, prediction track record, macroeconomic analysis, geopolitical predictions, scenario analysis">
+  <link rel="canonical" href="https://realistdata.com/">
   <link rel="icon" type="image/jpg" href="images/raven-logo.jpg">
+
+  <!-- Fonts: preconnect + link (moved from CSS @import for performance) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://realistdata.com/">
+  <meta property="og:title" content="Raven Data Insights — Geopolitical Risk Analysis with an Audit Trail">
+  <meta property="og:description" content="Every prediction dated. Every outcome scored. Geopolitical and financial analysis with a public track record.">
+  <meta property="og:image" content="https://realistdata.com/images/raven-og.jpg">
+  <meta property="og:site_name" content="Raven Data Insights">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Raven Data Insights — Geopolitical Risk Analysis with an Audit Trail">
+  <meta name="twitter:description" content="Every prediction dated. Every outcome scored. Geopolitical and financial analysis with a public track record.">
+  <meta name="twitter:image" content="https://realistdata.com/images/raven-og.jpg">
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://realistdata.com/#website",
+        "url": "https://realistdata.com/",
+        "name": "Raven Data Insights",
+        "description": "Geopolitical risk analysis with an audit trail. Every prediction dated, every outcome scored.",
+        "publisher": { "@id": "https://realistdata.com/#organization" },
+        "inLanguage": "en"
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://realistdata.com/#organization",
+        "name": "Raven Data Insights",
+        "url": "https://realistdata.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://realistdata.com/images/raven-logo.jpg",
+          "width": 512,
+          "height": 512
+        },
+        "description": "Hyperrealist geopolitical and financial forecasting with a public, scored track record.",
+        "founder": {
+          "@type": "Person",
+          "@id": "https://realistdata.com/#founder",
+          "name": "Christophe van Eysendyck",
+          "jobTitle": "Founder & Analyst",
+          "sameAs": [
+            "https://substack.com/@fromtheledge",
+            "https://www.linkedin.com/newsletters/notes-from-the-ledge-6951182737105936385/"
+          ]
+        },
+        "sameAs": [
+          "https://substack.com/@fromtheledge",
+          "https://www.linkedin.com/newsletters/notes-from-the-ledge-6951182737105936385/"
+        ],
+        "knowsAbout": ["Geopolitical risk analysis", "Financial forecasting", "Macroeconomic analysis", "Geopolitical scenario planning"]
+      },
+      {
+        "@type": "ProfessionalService",
+        "@id": "https://realistdata.com/#service",
+        "name": "Raven Data Insights",
+        "description": "Tailored geopolitical briefings, scenario analysis, and rigorous second opinions for high-stakes decisions.",
+        "provider": { "@id": "https://realistdata.com/#organization" },
+        "serviceType": ["Geopolitical Risk Analysis", "Financial Forecasting", "Scenario Analysis", "Custom Briefings"],
+        "areaServed": "Worldwide",
+        "url": "https://realistdata.com/contact"
+      }
+    ]
+  }
+  </script>
+
   <link rel="stylesheet" href="css/style.css">
+  <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="f82b530f-d535-4b13-9f3a-c132d8e75b42" data-blockingmode="auto" type="text/javascript"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5BYW86M4N2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5BYW86M4N2');
+  </script>
 </head>
 <body>
+  <a href="#main" class="skip-link">Skip to content</a>
 
   <!-- ── NAVBAR ──────────────────────────────────────────────── -->
   <nav class="navbar">
@@ -32,21 +121,61 @@
   </nav>
 
   <!-- ── HERO ────────────────────────────────────────────────── -->
+  <main id="main">
   <section class="hero">
     <img src="images/raven-logo.jpg" alt="Raven Data Insights Logo" class="hero-logo">
     <h1>Raven Data Insights</h1>
-    <p class="hero-subtitle">hyperrealist views on our high-frequency world</p>
+    <p class="hero-tagline">Geopolitical risk analysis with an audit trail.</p>
+    <p class="hero-subtitle">Every prediction dated. Every outcome scored.</p>
     <div class="hero-cta">
       <a href="map.html" class="btn btn-primary">Explore the Map</a>
       <a href="calls.html" class="btn btn-secondary">View All Calls</a>
     </div>
     <div class="hero-scroll">
       <span>scroll</span>
-      <div class="scroll-line"></div>
+      <div class="scroll-chevron"></div>
+    </div>
+  </section>
+
+  <!-- ── THE METHOD ──────────────────────────────────────────── -->
+  <section class="method" id="method">
+    <div class="container">
+      <div class="method-grid">
+        <div class="method-text">
+          <span class="section-label">The Method</span>
+          <h2>Why an audit trail changes everything</h2>
+          <p>Most geopolitical analysis is unfalsifiable by design. Consultancies sell narrative, not predictions. Hedged language. Scenario matrices with no commitments. When the dust settles, nobody checks who was right — because there's nothing to check.</p>
+          <p>We work differently. Every call is <strong>documented before the fact</strong>, dated, weighted by conviction, and scored publicly when it resolves. Hits and misses, side by side. The scorecard isn't a feature — it's the product.</p>
+          <p>The analysis itself draws on macroeconomics, geopolitical history, market structure, and the kind of cross-disciplinary thinking that siloed specialists rarely apply. We look for <strong>structural forces</strong>, not headlines — for the tectonic shifts that move slowly until, suddenly, they don't.</p>
+        </div>
+        <div class="method-principles">
+          <div class="method-card">
+            <div class="method-card-number">01</div>
+            <h3>Predictions, not opinions</h3>
+            <p>Every call is a falsifiable claim with a date and a region. If it can't be scored, it doesn't belong on the ledger.</p>
+          </div>
+          <div class="method-card">
+            <div class="method-card-number">02</div>
+            <h3>Misses published</h3>
+            <p>A track record that hides its failures is marketing. Ours includes every missed call, weighted and explained. That's how trust is built.</p>
+          </div>
+          <div class="method-card">
+            <div class="method-card-number">03</div>
+            <h3>Structure over noise</h3>
+            <p>We don't chase headlines. We map debt dynamics, demographic trajectories, energy dependencies, and alliance fragmentation — the forces that determine what happens next.</p>
+          </div>
+          <div class="method-card">
+            <div class="method-card-number">04</div>
+            <h3>Built for decision-makers</h3>
+            <p>Not academic papers. Not op-eds. Analysis designed for people who need to act — allocate capital, manage exposure, or brief a board — with confidence in the source.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- ── ABOUT ───────────────────────────────────────────────── -->
+  <div class="section-divider"><div class="section-chevron"></div></div>
   <section class="about" id="about">
     <div class="container">
       <div class="about-grid">
@@ -55,7 +184,6 @@
           <h2>Hyperrealism over hype</h2>
           <p>In a world flooded with hot takes and punditry, <strong>Raven Data Insights</strong> cuts through the noise with a single discipline: placing geopolitical and financial predictions on the map — literally.</p>
           <p>Every call is documented before the fact, dated, and publicly scored when it resolves. No cherry-picking. No revisionism. The raven sees all, and remembers.</p>
-          <p>My analysis draws on macroeconomics, geopolitical history, market structure, and the kind of cross-disciplinary thinking that siloed specialists rarely apply. I look for structural forces, not headlines — for the tectonic shifts that move slowly until, suddenly, they don't.</p>
           <p>The goal is not to be right 100% of the time. The goal is to be <strong>rigorously honest</strong> about when I'm right, when I'm wrong, and why.</p>
           <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
             <a href="https://substack.com/@fromtheledge" target="_blank" rel="noopener" class="btn btn-primary">Read on Substack</a>
@@ -85,6 +213,7 @@
   </section>
 
   <!-- ── WHAT I DELIVER ──────────────────────────────────────── -->
+  <div class="section-divider"><div class="section-chevron"></div></div>
   <section class="services" id="services">
     <div class="container">
       <span class="section-label">What I Deliver</span>
@@ -110,6 +239,7 @@
   </section>
 
   <!-- ── CTA BAND ────────────────────────────────────────────── -->
+  <div class="section-divider"><div class="section-chevron"></div></div>
   <section class="cta-section">
     <div class="container">
       <h2>Follow the calls in real time</h2>
@@ -122,7 +252,8 @@
   </section>
 
   <!-- ── CONTACT CTA ──────────────────────────────────────────── -->
-  <section class="contact-cta-section">
+  <div class="section-divider"><div class="section-chevron"></div></div>
+  <section class="contact-cta-section" id="contact-cta">
     <div class="container">
       <div class="contact-cta-inner">
         <div class="contact-cta-text">
@@ -138,7 +269,17 @@
     </div>
   </section>
 
+  <!-- ── FLOATING CTA BAR ────────────────────────────────────── -->
+  <div class="floating-cta" id="floating-cta">
+    <div class="floating-cta-inner">
+      <span class="floating-cta-text">Need geopolitical analysis you can verify?</span>
+      <a href="contact.html" class="btn btn-primary btn-sm">Get in Touch</a>
+    </div>
+  </div>
+
   <!-- ── FOOTER ──────────────────────────────────────────────── -->
+  </main>
+
   <footer class="footer">
     <div class="container">
       <div class="footer-grid">
@@ -209,11 +350,43 @@
         }
       })
       .catch(() => {
-        // Fallback for local file:// preview — static values
         document.getElementById('stat-total').textContent = '16';
         document.getElementById('stat-rate').textContent = '86%';
         document.getElementById('stat-regions').textContent = '5';
       });
+
+    // ── Floating CTA — appears after hero, hides near contact ────
+    (function() {
+      const bar = document.getElementById('floating-cta');
+      const hero = document.querySelector('.hero');
+      const contactCta = document.getElementById('contact-cta');
+      if (!bar || !hero) return;
+
+      let visible = false;
+
+      function checkVisibility() {
+        // Show once user has scrolled past 60% of the hero
+        const heroRect = hero.getBoundingClientRect();
+        const heroThreshold = heroRect.top + heroRect.height * 0.6;
+        const pastHero = heroThreshold < 0;
+
+        // Hide only when contact section is well into view (top half visible)
+        let nearContact = false;
+        if (contactCta) {
+          const contactTop = contactCta.getBoundingClientRect().top;
+          nearContact = contactTop < window.innerHeight * 0.5;
+        }
+
+        const shouldShow = pastHero && !nearContact;
+        if (shouldShow !== visible) {
+          visible = shouldShow;
+          bar.classList.toggle('show', visible);
+        }
+      }
+
+      window.addEventListener('scroll', checkVisibility, { passive: true });
+      checkVisibility();
+    })();
   </script>
 </body>
 </html>

@@ -1,0 +1,41 @@
+# Raven Data Insights
+
+> Geopolitical and financial risk analysis with a public, scored audit trail. Every prediction documented before the fact, dated, weighted by conviction, and scored when it resolves. Founded by Christophe van Eysendyck.
+
+Raven Data Insights publishes falsifiable geopolitical and financial predictions — not hedged scenario matrices or narrative-driven consulting. The track record is public: hits and misses, weighted and explained.
+
+The analysis draws on macroeconomics, geopolitical history, market structure, and cross-disciplinary structural thinking. The focus is on tectonic shifts: debt dynamics, demographic trajectories, energy dependencies, alliance fragmentation — forces that move slowly until they don't.
+
+The site is designed for decision-makers: capital allocators, risk managers, board advisors, and anyone who needs geopolitical clarity they can verify independently.
+
+## Core Pages
+
+- [Home](https://realistdata.com/): Overview of methodology, approach, and services offered
+- [Call Map](https://realistdata.com/map): Interactive world map of all geopolitical and financial predictions, plotted by region with outcome status (correct, missed, ongoing, passive)
+- [Calls & Scoring](https://realistdata.com/calls): Full scored ledger of predictions from 2023 onwards, with weighted accuracy methodology
+- [Contact](https://realistdata.com/contact): Inquiry form for tailored briefings, scenario analysis, and custom reports
+
+## Methodology
+
+Predictions are scored using a weighted system introduced in 2025:
+- ★★ Important (weight 2): High-conviction structural calls
+- ★ Normal (weight 1): Standard directional calls
+- — Passive (weight 0): Calls that something would *not* happen; tracked but excluded from weighted score
+
+Weighted accuracy = sum of weights of correct calls ÷ sum of weights of all resolved non-passive calls. For 2023–2024, all calls carry equal weight (1 point correct, 0 for missed).
+
+## Written Analysis
+
+- [Substack — Notes from the Ledge](https://substack.com/@fromtheledge): Full-length analyses behind each call, including reasoning, caveats, and updates
+- [LinkedIn Newsletter](https://www.linkedin.com/newsletters/notes-from-the-ledge-6951182737105936385/): Cross-posted analysis on LinkedIn
+
+## Services
+
+Tailored geopolitical briefings, macro scenario analysis, pre-decision second opinions, and custom reports. Contact via [the contact page](https://realistdata.com/contact).
+
+## Key Facts
+
+- Tracking predictions publicly since 2023
+- Based in Antwerp, Belgium
+- All calls documented before the fact — no retroactive editing
+- Analysis covers geopolitics, macro finance, conflict dynamics, energy, and trade

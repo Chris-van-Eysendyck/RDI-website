@@ -1,0 +1,43 @@
+# robots.txt for realistdata.com
+# Raven Data Insights — Geopolitical Risk Analysis
+
+# Default: all crawlers welcome
+User-agent: *
+Allow: /
+Disallow:
+
+# Sitemap
+Sitemap: https://realistdata.com/sitemap.xml
+
+# AI crawlers — explicitly welcomed
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Cohere-ai
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# See also: https://realistdata.com/llms.txt
