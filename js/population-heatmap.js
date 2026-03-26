@@ -1,33 +1,22 @@
 // ============================================================
 // population-heatmap.js
 // Population density "red mist" heatmap layer for globe.gl
-// Drop into /js/ and wire up from map page
 // ============================================================
 
 /**
  * Red mist color interpolator.
- * Takes a density value t ∈ [0, 1+] and returns an rgba() string
- * that goes from fully transparent → dark red → bright red/white-hot.
- *
- * The "mist" effect comes from:
- *   1. Low base opacity that fades in smoothly
- *   2. Color ramp from deep crimson to hot scarlet
- *   3. A soft bandwidth setting on the heatmap itself
+ * Tuned for the dense dataset — visible at low density,
+ * semi-transparent at peaks so markers/borders show through.
  */
 function redMistColorFn(t) {
-  // Clamp to reasonable range
   const v = Math.min(t, 1.2);
 
-  // Opacity: transparent at 0, peaks around 0.72 at full density
+  // Moderate curve — shows low density without flooding high density
   const alpha = Math.pow(v, 0.45) * 0.55;
 
-  // Red channel: always high — from deep crimson (160) to full red (255)
+  // Dark maroon at low density, bright scarlet at high
   const r = Math.round(140 + 115 * Math.min(v, 1));
-
-  // Green channel: stays very low, slight warm glow at peaks
   const g = Math.round(20 * Math.pow(v, 1.8));
-
-  // Blue channel: near-zero, tiny hint at extreme density for "heat"
   const b = Math.round(12 * Math.pow(v, 2.5));
 
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
@@ -39,17 +28,17 @@ function redMistColorFn(t) {
  *
  * @param {Globe} globe - Your existing globe.gl instance
  * @param {Object} opts - Optional overrides
- * @param {string} opts.dataUrl - URL to world_population.csv
- * @param {number} opts.bandwidth - Heatmap kernel bandwidth (default 0.9)
- * @param {number} opts.saturation - Color saturation multiplier (default 2.2)
- * @param {number} opts.topAltitude - Max heatmap altitude (default 0.12)
- * @param {number} opts.baseAltitude - Floor altitude (default 0.006)
+ * @param {string} opts.dataUrl - URL to population CSV
+ * @param {number} opts.bandwidth - Heatmap kernel bandwidth
+ * @param {number} opts.saturation - Color saturation multiplier
+ * @param {number} opts.topAltitude - Max heatmap altitude
+ * @param {number} opts.baseAltitude - Floor altitude
  *
  * @returns {Object} Controller with .show(), .hide(), .toggle(), .isVisible()
  */
 export function initPopulationHeatmap(globe, opts = {}) {
   const {
-    dataUrl = 'https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/world_population.csv',
+    dataUrl = 'data/world_population_dense.csv',
     bandwidth = 1.4,
     saturation = 2.8,
     topAltitude = 0.01,
