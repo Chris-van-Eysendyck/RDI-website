@@ -468,7 +468,9 @@
 
   <script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
   <script src="https://unpkg.com/globe.gl"></script>
-  <script>
+  <script type="module">
+  import { initPopulationHeatmap } from './js/population-heatmap.js';
+    
     // ── Hamburger menu ───────────────────────────────────────────
     (function() {
       const btn = document.querySelector('.nav-hamburger');
@@ -759,13 +761,21 @@
     });
 
     // ── Layer toggles ──────────────────────────────────────────
-    ['energy', 'goods', 'chokepoints'].forEach(layer => {
-      const cb = document.getElementById(`layer-${layer}`);
-      cb.addEventListener('change', () => {
-        layerState[layer] = cb.checked;
-        refreshLayers();
-      });
-    });
+['energy', 'goods', 'chokepoints'].forEach(layer => {
+  const cb = document.getElementById(`layer-${layer}`);
+  cb.addEventListener('change', () => {
+    layerState[layer] = cb.checked;
+    refreshLayers();
+  });
+});
+
+// ── Population heatmap ─────────────────────────────────────
+const popHeatmap = initPopulationHeatmap(globe);
+const popToggle = document.getElementById('layer-population');
+popToggle.disabled = false;
+popToggle.closest('.layer-toggle').classList.remove('disabled');
+popToggle.closest('.layer-toggle').querySelector('.coming-soon')?.remove();
+popToggle.addEventListener('change', () => popHeatmap.toggle());
 
     // ── Mobile layer panel toggle ───────────────────────────────
     (function() {
