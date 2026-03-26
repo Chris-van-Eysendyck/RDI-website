@@ -52,8 +52,8 @@ export function initPopulationHeatmap(globe, opts = {}) {
     dataUrl = 'https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/world_population.csv',
     bandwidth = 0.9,
     saturation = 2.2,
-    topAltitude = 0.12,
-    baseAltitude = 0.006,
+    topAltitude = 0.01,
+    baseAltitude = 0.001,
   } = opts;
 
   let popData = null;
