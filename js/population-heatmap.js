@@ -16,19 +16,19 @@
  */
 function redMistColorFn(t) {
   // Clamp to reasonable range
-  const v = Math.min(t, 1.5);
+  const v = Math.min(t, 1.2);
 
   // Opacity: transparent at 0, peaks around 0.72 at full density
-  const alpha = Math.pow(v, 0.25) * 0.65;
+  const alpha = Math.pow(v, 0.45) * 0.55;
 
   // Red channel: always high — from deep crimson (160) to full red (255)
-  const r = Math.round(100 + 155 * Math.min(v, 1));
+  const r = Math.round(140 + 115 * Math.min(v, 1));
 
   // Green channel: stays very low, slight warm glow at peaks
-  const g = Math.round(15 * v);
+  const g = Math.round(20 * Math.pow(v, 1.8));
 
   // Blue channel: near-zero, tiny hint at extreme density for "heat"
-  const b = Math.round(10 * v);
+  const b = Math.round(12 * Math.pow(v, 2.5));
 
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
@@ -50,8 +50,8 @@ function redMistColorFn(t) {
 export function initPopulationHeatmap(globe, opts = {}) {
   const {
     dataUrl = 'https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/world_population.csv',
-    bandwidth = 4.0,
-    saturation = 1.8,
+    bandwidth = 1.4,
+    saturation = 2.8,
     topAltitude = 0.01,
     baseAltitude = 0.001,
   } = opts;
