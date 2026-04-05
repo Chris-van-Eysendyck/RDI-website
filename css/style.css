@@ -1131,7 +1131,7 @@ strong { color: var(--text); font-weight: 600; }
    INNER PAGE HERO — shared header for non-hero pages
    ================================================================ */
 .page-hero {
-  padding: calc(var(--nav-h) + 4rem) 0 3.5rem;
+  padding: calc(var(--nav-h) + 5.5rem) 0 4rem;
   border-bottom: 1px solid var(--border);
   background: linear-gradient(to bottom, var(--bg-surface), var(--bg));
 }
@@ -1206,7 +1206,7 @@ strong { color: var(--text); font-weight: 600; }
 }
 .timeline-item {
   position: relative;
-  padding: 0 0 2.75rem 2rem;
+  padding: 0 0 3.5rem 2rem;
 }
 .timeline-item:last-child { padding-bottom: 0; }
 .timeline-item::before {
@@ -1436,7 +1436,7 @@ strong { color: var(--text); font-weight: 600; }
 
 /* ── Responsive: new pages (≤ 600px) ───────────────────── */
 @media (max-width: 600px) {
-  .page-hero { padding: calc(var(--nav-h) + 2.5rem) 0 2.5rem; }
+  .page-hero { padding: calc(var(--nav-h) + 4rem) 0 2.5rem; }
   .bio-section, .timeline-section, .creds-section,
   .track-snapshot, .engagements-section, .process-section,
   .pricing-section, .audience-section { padding: 4rem 0; }

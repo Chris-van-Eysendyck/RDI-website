@@ -107,16 +107,16 @@
               <span class="stat-label">Years in Finance &amp; Analysis</span>
             </div>
             <div class="stat-card">
-              <span class="stat-number">40</span>
-              <span class="stat-label">UHNW Clients Advised</span>
-            </div>
-            <div class="stat-card">
               <span class="stat-number" id="about-stat-rate">—</span>
               <span class="stat-label">Call Accuracy Rate</span>
             </div>
             <div class="stat-card">
               <span class="stat-number">2022</span>
               <span class="stat-label">Publishing Analysis Since</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number" id="about-snap-total">—</span>
+              <span class="stat-label">Public Calls on Record</span>
             </div>
           </div>
         </div>
@@ -138,20 +138,14 @@
           <div class="timeline-role">Business Analyst</div>
           <div class="timeline-org">Mercier Van Lanschot · Van Lanschot-Kempen Group</div>
           <div class="timeline-desc">Business integration across a European private banking group. Project management, IT business analysis, and applied work with data tooling and AI agents.</div>
+          <div class="timeline-desc" style="margin-top:0.6rem;"><strong style="color:var(--accent);font-size:0.82rem;">🏆 Winner — Van Lanschot-Kempen Group Hackathon 2025</strong></div>
         </div>
 
         <div class="timeline-item">
           <div class="timeline-date">Jan 2019 — Feb 2025 · 6 years</div>
           <div class="timeline-role">Wealth Advisor</div>
           <div class="timeline-org">Accuro Wealth Advisors · Antwerp</div>
-          <div class="timeline-desc">Advised ultra-high-net-worth clients through bespoke portfolio construction and management — growing from 3 to 40 active client relationships. Built the firm's digital and offline brand strategy from scratch, expanding the audience from 125 to over 1,000. Led IT projects for the investment management team, including a proprietary fund assessment tool, Python-based investment policy automation, and the rollout of LSEG financial data infrastructure.</div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-date">Jun 2011 — Jan 2012</div>
-          <div class="timeline-role">Marketing &amp; Communications</div>
-          <div class="timeline-org">Outsource Communications</div>
-          <div class="timeline-desc">Marketing communications and copywriting for start-ups. Brand reinforcement and press release work.</div>
+          <div class="timeline-desc">Advised ultra-high-net-worth clients through bespoke portfolio construction and management. Built the firm's digital and offline brand strategy from scratch, expanding the audience from 125 to over 1,000. Led IT projects for the investment management team, including a proprietary fund assessment tool, Python-based investment policy automation, and the rollout of LSEG financial data infrastructure.</div>
         </div>
 
         <div class="timeline-item">
@@ -159,6 +153,13 @@
           <div class="timeline-role">Private Client Banking</div>
           <div class="timeline-org">Several Belgian institutions</div>
           <div class="timeline-desc">Advised private clients on investment strategies, credit, and patrimonial planning across a range of Belgian financial institutions.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2011 — 2012</div>
+          <div class="timeline-role">Marketing &amp; Communications</div>
+          <div class="timeline-org">Outsource Communications</div>
+          <div class="timeline-desc">Marketing communications and copywriting for start-ups. Brand reinforcement and press release work.</div>
         </div>
 
       </div>
@@ -306,18 +307,16 @@
           ? Math.round(successful.length / completed.length * 100) + '%'
           : '—';
 
-        ['snap-total', 'about-stat-rate'].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = id === 'snap-total' ? all.length : rate;
-        });
-        document.getElementById('snap-total').textContent = all.length;
-        document.getElementById('snap-rate').textContent = rate;
-        document.getElementById('snap-regions').textContent = regions;
-        document.getElementById('about-stat-rate').textContent = rate;
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        set('about-stat-rate', rate);
+        set('about-snap-total', all.length);
+        set('snap-total', all.length);
+        set('snap-rate', rate);
+        set('snap-regions', regions);
       })
       .catch(() => {
-        ['snap-total'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '16'; });
-        ['snap-rate', 'about-stat-rate'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '86%'; });
+        ['snap-total','about-snap-total'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '16'; });
+        ['snap-rate','about-stat-rate'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '86%'; });
         const el = document.getElementById('snap-regions'); if (el) el.textContent = '5';
       });
   </script>
