@@ -1160,22 +1160,13 @@ strong { color: var(--text); font-weight: 600; }
 .bio-text p { margin-bottom: 1.1rem; }
 .bio-photo {
   width: 100%;
-  aspect-ratio: 3 / 4;
-  max-width: 200px;
-  background: var(--bg-card);
-  border: 1px dashed var(--border-light);
+  max-width: 260px;
   border-radius: var(--radius);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-dim);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  object-fit: cover;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
   margin-bottom: 2rem;
-  text-align: center;
-  padding: 1rem;
-  line-height: 1.6;
+  display: block;
 }
 .bio-stats {
   display: grid;
