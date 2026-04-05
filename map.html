@@ -469,8 +469,6 @@
   <script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
   <script src="https://unpkg.com/globe.gl"></script>
   <script type="module">
-  import { initPopulationHeatmap } from './js/population-heatmap.js';
-    
     // ── Hamburger menu ───────────────────────────────────────────
     (function() {
       const btn = document.querySelector('.nav-hamburger');
@@ -769,13 +767,8 @@
   });
 });
 
-// ── Population heatmap ─────────────────────────────────────
-const popHeatmap = initPopulationHeatmap(globe);
-const popToggle = document.getElementById('layer-population');
-popToggle.disabled = false;
-popToggle.closest('.layer-toggle').classList.remove('disabled');
-popToggle.closest('.layer-toggle').querySelector('.coming-soon')?.remove();
-popToggle.addEventListener('change', () => popHeatmap.toggle());
+// Population layer: parked as "coming soon" — too GPU-heavy for inline globe
+// import { initPopulationHeatmap } from './js/population-heatmap.js';
 
     // ── Mobile layer panel toggle ───────────────────────────────
     (function() {
