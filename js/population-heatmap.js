@@ -1,41 +1,38 @@
 // ============================================================
 // population-heatmap.js
 // Population density — 3D hex-bin spike layer for globe.gl
-// Replaces flat heatmap with extruded hexagonal prisms,
-// height proportional to population density.
 // ============================================================
 
 export function initPopulationHeatmap(globe, opts = {}) {
   const {
     dataUrl    = 'data/world_population_dense.csv',
-    resolution = 4,     // H3 hex resolution: 4 ≈ 86 km across — regional detail
-    maxAlt     = 0.22,  // tallest hex height (fraction of globe radius)
-    margin     = 0.12,  // gap between hexes (0 = touching, 1 = invisible)
+    resolution = 5,     // H3 resolution 5 ≈ 33 km hex — fine city-scale detail
+    maxAlt     = 0.04,  // tallest spike = 4% of globe radius (subtle but visible)
+    margin     = 0.20,  // visible gap between hexes so individual structures show
   } = opts;
 
   let popData = null;
   let visible = false;
   let loading = false;
 
-  // Color ramp: dark crimson → amber → bright gold
-  // Matches RDI brand palette
+  // Color ramp: dark crimson → warm amber → bright gold at peak
   function topColor(t) {
     t = Math.min(Math.max(t, 0), 1);
     const r = Math.round(110 + 145 * t);
-    const g = Math.round(55  + 130 * Math.pow(t, 0.65));
-    const b = Math.round(8   +  40 * Math.pow(t, 1.8));
-    return `rgba(${r},${g},${b},0.95)`;
+    const g = Math.round(50  + 130 * Math.pow(t, 0.7));
+    const b = Math.round(8   +  40 * Math.pow(t, 2));
+    return `rgba(${r},${g},${b},0.92)`;
   }
 
   function sideColor(t) {
     t = Math.min(Math.max(t, 0), 1);
-    const r = Math.round(70 + 100 * t);
-    const g = Math.round(35 +  80 * Math.pow(t, 0.65));
-    const b = Math.round(5  +  25 * Math.pow(t, 1.8));
-    return `rgba(${r},${g},${b},0.55)`;
+    const r = Math.round(70 + 90 * t);
+    const g = Math.round(30 + 75 * Math.pow(t, 0.7));
+    const b = Math.round(5  + 22 * Math.pow(t, 2));
+    return `rgba(${r},${g},${b},0.5)`;
   }
 
-  // Initialize hex-bin layer (empty until data loads)
+  // Initialize empty hex-bin layer
   globe
     .hexBinPointsData([])
     .hexBinPointLat('lat')
@@ -68,20 +65,18 @@ export function initPopulationHeatmap(globe, opts = {}) {
   }
 
   function applyData(data) {
-    // Estimate a reasonable max sumWeight for this resolution.
-    // At H3 resolution 4 (~86 km hex), each hex covers ~30 of our 0.25° cells.
-    // Use log scaling so the tallest bars (megacities) pop without
-    // overwhelming everything else.
-    const maxPop = Math.max(...data.map(d => d.pop));
-    const MAX_W  = maxPop * 35; // headroom for hexbin aggregation
+    // At H3 resolution 5 (~33 km hex), our 0.25° data cells (~27 km) map
+    // roughly 1:1 to hexes. Typical max sumWeight ≈ 3–5 cells × max pop (62).
+    // Use sqrt scaling: gives good spread so sparse areas stay dim but
+    // medium-density regions (not just megacities) are also visible.
+    const MAX_W = 180; // generous cap; values above this all reach peak color
 
     function t(d) {
-      // log scale: compresses extreme peaks, reveals smaller cities
-      return Math.min(Math.log(d.sumWeight + 1) / Math.log(MAX_W + 1), 1);
+      return Math.min(Math.sqrt(d.sumWeight / MAX_W), 1);
     }
 
     globe
-      .hexAltitude(d => Math.pow(t(d), 0.7) * maxAlt)
+      .hexAltitude(d => t(d) * maxAlt)
       .hexTopColor(d => topColor(t(d)))
       .hexSideColor(d => sideColor(t(d)))
       .hexBinPointsData(data);
