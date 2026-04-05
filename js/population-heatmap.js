@@ -1,23 +1,32 @@
 // ============================================================
 // population-heatmap.js
-// Population density "red mist" heatmap layer for globe.gl
+// Population density heatmap layer for globe.gl
 // ============================================================
 
-function redMistColorFn(t) {
-  const v = Math.min(t, 1.2);
-  const alpha = Math.pow(v, 0.45) * 0.55;
-  const r = Math.round(140 + 115 * Math.min(v, 1));
-  const g = Math.round(20 * Math.pow(v, 1.8));
-  const b = Math.round(12 * Math.pow(v, 2.5));
+function populationColorFn(t) {
+  // t = normalized density (0–1+), pre-multiplied by saturation
+  // Hard noise floor — empty ocean/land stays invisible
+  if (t < 0.05) return 'rgba(0,0,0,0)';
+
+  const v = Math.min(t, 1);
+
+  // Steep alpha: sparse areas stay dim, cities glow strongly
+  const alpha = Math.pow(v, 0.85) * 0.80;
+
+  // Color ramp: dark crimson → amber → bright gold at peak density
+  const r = Math.round(140 + 115 * v);
+  const g = Math.round(10  + 170 * Math.pow(v, 0.65));
+  const b = Math.round(5   +  40 * Math.pow(v, 2.2));
+
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 export function initPopulationHeatmap(globe, opts = {}) {
   const {
-    dataUrl = 'data/world_population_dense.csv',
-    bandwidth = 1.2,
-    saturation = 2.8,
-    topAltitude = 0.01,
+    dataUrl      = 'data/world_population_dense.csv',
+    bandwidth    = 0.5,   // tight (~55 km) — matches 0.25° data resolution; prevents ocean bleed
+    saturation   = 4.5,   // high — sharpens peak cities vs. sparse countryside
+    topAltitude  = 0.015,
     baseAltitude = 0.001,
   } = opts;
 
@@ -30,7 +39,7 @@ export function initPopulationHeatmap(globe, opts = {}) {
     .heatmapPointLng('lng')
     .heatmapPointWeight('pop')
     .heatmapBandwidth(bandwidth)
-    .heatmapColorFn(() => redMistColorFn)
+    .heatmapColorFn(() => populationColorFn)
     .heatmapColorSaturation(saturation)
     .heatmapTopAltitude(topAltitude)
     .heatmapBaseAltitude(baseAltitude)
