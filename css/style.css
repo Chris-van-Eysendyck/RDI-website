@@ -1337,11 +1337,9 @@ strong { color: var(--text); font-weight: 600; }
   letter-spacing: 0.03em;
 }
 .service-card.featured {
-  border-color: rgba(78, 139, 100, 0.4);
-  background: linear-gradient(140deg, var(--bg-card), rgba(78, 139, 100, 0.05));
+  background: linear-gradient(140deg, var(--bg-card), rgba(200, 168, 50, 0.04));
   position: relative;
 }
-.service-card.featured:hover { border-color: rgba(78, 139, 100, 0.65); }
 .featured-badge {
   display: inline-block;
   font-size: 0.6rem;
@@ -1353,6 +1351,46 @@ strong { color: var(--text); font-weight: 600; }
   border-radius: 4px;
   padding: 0.2rem 0.55rem;
   margin-bottom: 0.6rem;
+}
+.tier-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  padding: 0.2rem 0.6rem;
+  margin-bottom: 1rem;
+}
+.tier-bronze { color: #c4904a; background: rgba(196, 144, 74, 0.12); }
+.tier-silver { color: #9aaab8; background: rgba(154, 170, 184, 0.12); }
+.tier-gold   { color: #c8a832; background: rgba(200, 168, 50, 0.12); }
+.service-card.featured { border-color: rgba(200, 168, 50, 0.3); }
+.service-card.featured:hover { border-color: rgba(200, 168, 50, 0.55); }
+.tier-tagline {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+  font-style: italic;
+}
+.tier-includes {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.tier-includes li {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding-left: 1.1rem;
+  position: relative;
+}
+.tier-includes li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 600;
 }
 
 /* Process (How it works) */
