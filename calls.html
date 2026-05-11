@@ -171,50 +171,73 @@
 
   <script>
     // ── Helpers ─────────────────────────────────────────────────
-    function weightLabel(w) {
+    const HIT_STATUSES  = new Set(['Resolved-Hit']);
+    const MISS_STATUSES = new Set(['Resolved-Miss', 'Resolved-Partial']);
+    const OPEN_STATUSES = new Set(['Open']);
+
+    function isResolved(c) {
+      return !OPEN_STATUSES.has(c.status) && c.status !== 'Voided';
+    }
+    function isHit(c) { return HIT_STATUSES.has(c.status); }
+
+    function weightLabel(c) {
+      const isWeighted = c.year >= 2025;
+      if (!isWeighted) return '<span class="weight-label" style="color:var(--text-dim)">Unweighted</span>';
+      const w = c.weight;
       if (w === 2) return '<span class="weight-stars">★★</span><span class="weight-label">Important</span>';
       if (w === 1) return '<span class="weight-stars">★</span><span class="weight-label">Normal</span>';
       if (w === 0) return '<span class="weight-stars" style="color:var(--text-dim)">—</span><span class="weight-label">Passive</span>';
       return '';
     }
 
-    function outcomeLabel(o) {
-      if (o === 'success') return '<span class="outcome-badge success">✓ Correct</span>';
-      if (o === 'failed')  return '<span class="outcome-badge failed">✗ Missed</span>';
-      return '<span class="outcome-badge pending">⏳ Pending</span>';
+    function statusLabel(c) {
+      if (c.status === 'Resolved-Hit')     return '<span class="outcome-badge success">✓ Correct</span>';
+      if (c.status === 'Resolved-Miss')    return '<span class="outcome-badge failed">✗ Missed</span>';
+      if (c.status === 'Resolved-Partial') return '<span class="outcome-badge partial">~ Partial</span>';
+      if (c.status === 'Voided')           return '<span class="outcome-badge" style="color:var(--text-dim)">— Voided</span>';
+      return '<span class="outcome-badge pending">⏳ Open</span>';
     }
 
     function formatDate(d) {
       return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     }
 
+    function callHeadline(c) {
+      const text = c.call_text || '';
+      const stop = text.search(/[.!?—]/);
+      return stop > 0 && stop < 110 ? text.slice(0, stop + 1) : text.slice(0, 100) + (text.length > 100 ? '…' : '');
+    }
+
+    function tagsHtml(tags) {
+      if (!tags || !tags.length) return '';
+      return '<div class="call-tags">' + tags.slice(0, 5).map(t =>
+        `<span class="call-tag">${t}</span>`
+      ).join('') + '</div>';
+    }
+
     // ── Score computation ────────────────────────────────────────
     function computeScore(calls, year) {
-      const subset = calls.filter(c => year === 'all' || c.year === year);
-      const resolved = subset.filter(c => c.outcome !== 'pending');
+      const subset   = calls.filter(c => year === 'all' || c.year === year);
+      const resolved = subset.filter(isResolved);
 
-      if (year >= 2025) {
-        // Weighted scoring — exclude passive (weight=0)
-        const countable = resolved.filter(c => c.weight > 0);
-        const maxW  = countable.reduce((s, c) => s + c.weight, 0);
-        const gotW  = countable.filter(c => c.outcome === 'success').reduce((s, c) => s + c.weight, 0);
+      if (year >= 2025 || year === 'all') {
+        const weighted   = resolved.filter(c => c.year >= 2025 && c.weight > 0);
+        const simple     = resolved.filter(c => c.year < 2025);
+        const maxW = weighted.reduce((s, c) => s + c.weight, 0) + simple.length;
+        const gotW = weighted.filter(isHit).reduce((s, c) => s + c.weight, 0)
+                   + simple.filter(isHit).length;
         return { maxW, gotW, resolved: resolved.length, total: subset.length };
       } else {
-        // Simple 1/0 scoring for pre-2025
-        const got = resolved.filter(c => c.outcome === 'success').length;
+        const got = resolved.filter(isHit).length;
         return { maxW: resolved.length, gotW: got, resolved: resolved.length, total: subset.length };
       }
     }
 
     function scoreDisplay(sc, year) {
       if (sc.resolved === 0) return { label: '—', pct: 0 };
-      if (sc.maxW === 0)    return { label: '—', pct: 0 };
+      if (sc.maxW === 0)     return { label: '—', pct: 0 };
       const pct = Math.round(sc.gotW / sc.maxW * 100);
-      if (year >= 2025) {
-        return { label: `${sc.gotW}/${sc.maxW}`, pct };
-      } else {
-        return { label: `${sc.gotW}/${sc.resolved}`, pct };
-      }
+      return { label: `${sc.gotW}/${sc.maxW}`, pct };
     }
 
     // ── Render score cards ───────────────────────────────────────
@@ -226,26 +249,23 @@
       years.forEach(yr => {
         const sc  = computeScore(calls, yr);
         const dis = scoreDisplay(sc, yr);
-        const note = yr >= 2025 ? 'Weighted score' : 'Simple score';
         const pending = sc.total - sc.resolved;
 
         grid.innerHTML += `
           <div class="score-card" data-year="${yr}" style="cursor:pointer" title="Filter by ${yr}">
             <div class="score-card-year">${yr}${yr >= 2025 ? ' · Weighted' : ''}</div>
             <div class="score-card-value">${dis.label}</div>
-            <div class="score-card-label">${dis.pct > 0 ? dis.pct + '% accuracy' : 'No resolved calls yet'}${pending > 0 ? ` · ${pending} pending` : ''}</div>
+            <div class="score-card-label">${dis.pct > 0 ? dis.pct + '% accuracy' : 'No resolved calls yet'}${pending > 0 ? ` · ${pending} open` : ''}</div>
             <div class="score-bar"><div class="score-bar-fill" data-width="${dis.pct}"></div></div>
           </div>`;
       });
 
-      // Animate bars after render
       setTimeout(() => {
         document.querySelectorAll('.score-bar-fill').forEach(el => {
           el.style.width = el.dataset.width + '%';
         });
       }, 100);
 
-      // Score card click → filter by that year and scroll to list
       document.querySelectorAll('.score-card[data-year]').forEach(card => {
         card.addEventListener('click', () => {
           const yr = card.dataset.year;
@@ -265,9 +285,9 @@
       list.innerHTML = '';
 
       let subset = yearFilter === 'all'
-        ? [...calls].sort((a, b) => b.year - a.year || new Date(b.date) - new Date(a.date))
+        ? [...calls].sort((a, b) => b.year - a.year || new Date(b.date_made) - new Date(a.date_made))
         : calls.filter(c => c.year === parseInt(yearFilter))
-               .sort((a, b) => new Date(b.date) - new Date(a.date));
+               .sort((a, b) => new Date(b.date_made) - new Date(a.date_made));
 
       if (subset.length === 0) {
         list.innerHTML = '<p style="color:var(--text-dim);padding:2rem 0">No calls for this period yet.</p>';
@@ -275,28 +295,28 @@
       }
 
       subset.forEach(c => {
-        const isWeighted = c.year >= 2025;
-        const isPlaceholder = !!c._placeholder;
+        const statusClass = HIT_STATUSES.has(c.status) ? 'success'
+                          : MISS_STATUSES.has(c.status) ? 'failed'
+                          : 'pending';
 
         list.innerHTML += `
-          <div class="call-card ${c.outcome}-card${isPlaceholder ? ' placeholder' : ''}">
+          <div class="call-card ${statusClass}-card">
             <div class="call-left">
               <div class="call-meta">
-                <span class="call-date">${formatDate(c.date)}</span>
-                <span class="call-region">${c.region}</span>
-                ${isPlaceholder ? '<span class="call-region" style="background:rgba(255,103,25,0.1);color:var(--accent)">Placeholder</span>' : ''}
+                <span class="call-date">${formatDate(c.date_made)}</span>
+                <span class="call-region">${c.domain}</span>
+                <span class="call-id-badge">${c.call_id}</span>
               </div>
-              <div class="call-title">${c.title}</div>
-              <div class="call-desc">${c.description}</div>
-              ${c.article_url && c.article_url !== '#'
-                ? `<a class="call-link" href="${c.article_url}" target="_blank" rel="noopener">↗ ${c.article_title}</a>`
-                : ''}
+              <div class="call-title">${callHeadline(c)}</div>
+              <div class="call-desc">${c.call_text}</div>
+              ${c.time_horizon ? `<div class="call-horizon">⏱ ${c.time_horizon}</div>` : ''}
+              ${c.resolution_note ? `<div class="call-resolution">Resolution: ${c.resolution_note}</div>` : ''}
+              ${tagsHtml(c.tags)}
+              ${c.source_url ? `<a class="call-link" href="${c.source_url}" target="_blank" rel="noopener">↗ ${c.source_title || 'Source'}</a>` : ''}
             </div>
             <div class="call-right">
-              ${outcomeLabel(c.outcome)}
-              ${isWeighted
-                ? `<div class="weight-badge">${weightLabel(c.weight)}</div>`
-                : `<div class="weight-badge"><span class="weight-label" style="color:var(--text-dim)">Unweighted</span></div>`}
+              ${statusLabel(c)}
+              <div class="weight-badge">${weightLabel(c)}</div>
             </div>
           </div>`;
       });
@@ -336,14 +356,14 @@
     })();
 
     // ── Bootstrap ────────────────────────────────────────────────
-    fetch('data/calls.json')
+    fetch('data/ledger.json')
       .then(r => r.json())
       .then(data => {
         callsData = data.calls;
-        renderScoreCards(callsData.filter(c => !c._placeholder));
+        renderScoreCards(callsData);
         renderCalls(callsData, 'all');
       })
-      .catch(err => {
+      .catch(() => {
         document.getElementById('calls-list').innerHTML =
           '<p style="color:var(--failed);padding:2rem 0">Could not load calls data. If viewing locally, open via a local server (e.g. <code>npx serve .</code>) rather than directly from the file system.</p>';
       });
