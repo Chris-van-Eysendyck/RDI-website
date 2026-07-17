@@ -194,19 +194,25 @@
         </div>
         <div class="about-stats">
           <div class="stat-card">
-            <span class="stat-number" id="stat-total">—</span>
+            <span class="stat-number" id="stat-total"><!--PRERENDER:STAT-TOTAL-->
+39
+<!--/PRERENDER--></span>
             <span class="stat-label">Total Calls Made</span>
           </div>
           <div class="stat-card">
-            <span class="stat-number" id="stat-rate">—</span>
+            <span class="stat-number" id="stat-rate"><!--PRERENDER:STAT-RATE-->
+91%
+<!--/PRERENDER--></span>
             <span class="stat-label">Success Rate</span>
           </div>
           <div class="stat-card">
-            <span class="stat-number">2023</span>
+            <span class="stat-number">2022</span>
             <span class="stat-label">Tracking Since</span>
           </div>
           <div class="stat-card">
-            <span class="stat-number" id="stat-regions">—</span>
+            <span class="stat-number" id="stat-regions"><!--PRERENDER:STAT-REGIONS-->
+5
+<!--/PRERENDER--></span>
             <span class="stat-label">Regions Covered</span>
           </div>
         </div>
@@ -265,7 +271,7 @@
         </div>
         <div class="contact-cta-action">
           <a href="contact.html" class="btn btn-primary">Contact Us</a>
-          <div class="contact-cta-email">or email <span id="index-email"></span></div>
+          <div class="contact-cta-email">or email <span id="index-email"><a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#114;&#97;&#118;&#101;&#110;&#100;&#97;&#116;&#97;&#105;&#110;&#115;&#105;&#103;&#104;&#116;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#114;&#97;&#118;&#101;&#110;&#100;&#97;&#116;&#97;&#105;&#110;&#115;&#105;&#103;&#104;&#116;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></span></div>
         </div>
       </div>
     </div>
@@ -330,34 +336,8 @@
       });
     })();
 
-    // ── Email obfuscation ────────────────────────────────────────
-    (function() {
-      const u = 'ravendatainsight', d = 'gmail.com';
-      const el = document.getElementById('index-email');
-      if (el) el.innerHTML = `<a href="mailto:${u}@${d}">${u}@${d}</a>`;
-    })();
-
-    // Load live stats from calls.json
-    fetch('data/calls.json')
-      .then(r => r.json())
-      .then(data => {
-        const all = data.calls.filter(c => !c._placeholder);
-        const completed = all.filter(c => c.outcome !== 'pending');
-        const successful = completed.filter(c => c.outcome === 'success');
-        const regions = [...new Set(all.map(c => c.region))].length;
-
-        document.getElementById('stat-total').textContent = all.length;
-        document.getElementById('stat-regions').textContent = regions;
-        if (completed.length > 0) {
-          document.getElementById('stat-rate').textContent =
-            Math.round(successful.length / completed.length * 100) + '%';
-        }
-      })
-      .catch(() => {
-        document.getElementById('stat-total').textContent = '16';
-        document.getElementById('stat-rate').textContent = '86%';
-        document.getElementById('stat-regions').textContent = '5';
-      });
+    // Headline stats are baked into the HTML at build time by scripts/prerender.py,
+    // computed from the canonical ledger (data/calls_ledger.csv). No runtime fetch.
 
     // ── Floating CTA — appears after hero, hides near contact ────
     (function() {

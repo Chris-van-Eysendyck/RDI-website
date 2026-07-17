@@ -11,3 +11,7 @@ desktop.ini
 
 # Node (if ever used locally)
 node_modules/
+
+# Python
+__pycache__/
+*.pyc

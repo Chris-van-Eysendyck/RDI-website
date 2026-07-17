@@ -114,7 +114,7 @@
           <div class="contact-info-block">
             <div class="contact-info-label">Email</div>
             <div class="contact-info-value">
-              <span id="contact-email-link"><span class="contact-email-placeholder">Loading…</span></span>
+              <span id="contact-email-link"><a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#114;&#97;&#118;&#101;&#110;&#100;&#97;&#116;&#97;&#105;&#110;&#115;&#105;&#103;&#104;&#116;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#114;&#97;&#118;&#101;&#110;&#100;&#97;&#116;&#97;&#105;&#110;&#115;&#105;&#103;&#104;&#116;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></span>
             </div>
           </div>
 
@@ -202,7 +202,7 @@
             </div>
 
             <div class="form-error-msg" id="form-error">
-              Something went wrong. Please email directly at <span id="form-error-email"></span>
+              Something went wrong. Please email directly at <span id="form-error-email"><a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#114;&#97;&#118;&#101;&#110;&#100;&#97;&#116;&#97;&#105;&#110;&#115;&#105;&#103;&#104;&#116;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" style="color:var(--failed)">&#114;&#97;&#118;&#101;&#110;&#100;&#97;&#116;&#97;&#105;&#110;&#115;&#105;&#103;&#104;&#116;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></span>
             </div>
           </form>
         </div>
@@ -239,21 +239,9 @@
   </footer>
 
   <script>
-    // ── Email obfuscation ────────────────────────────────────────
-    // Email is never present in the HTML source — assembled only by JS,
-    // which stops the vast majority of address-harvesting scrapers.
-    (function () {
-      const u = 'ravendatainsight', d = 'gmail.com';
-      const addr = u + '@' + d;
-
-      // Sidebar email link
-      const el = document.getElementById('contact-email-link');
-      if (el) el.innerHTML = `<a href="mailto:${addr}">${addr}</a>`;
-
-      // Fallback email inside error message
-      const fe = document.getElementById('form-error-email');
-      if (fe) fe.innerHTML = `<a href="mailto:${addr}" style="color:var(--failed)">${addr}</a>`;
-    })();
+    // Email links are entity-encoded in static HTML: readable to browsers,
+    // opaque to naive address-harvesting scrapers, and — critically —
+    // present even when JS fails (the exact moment the fallback is needed).
 
     // ── Form submission (AJAX for Netlify) ──────────────────────
     const form   = document.getElementById('contact-form');
